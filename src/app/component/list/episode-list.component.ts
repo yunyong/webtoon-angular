@@ -16,7 +16,7 @@ import { WebtoonService } from '../webtoon/webtoon.service';
     `,
     styles : [`
         .list_episode li {padding:10px;border-top:1px solid #ccc}
-        .list_episode img {width:100px}
+        .list_episode img {width:80px}
     `]
 })
 
