@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { WebtoonService } from '../webtoon/webtoon.service';
+import { WebtoonService } from '../webtoon.service';
 
 @Component({
     selector : 'episode-list',
@@ -8,8 +8,10 @@ import { WebtoonService } from '../webtoon/webtoon.service';
     <ng-template #wrapInfo>
         <ul class="list_episode" *ngIf="webtoonEpisodeList">
             <li *ngFor="let episode of webtoonEpisodeList">
-                <img src="{{ episode.thumbnailImage.url }}">
-                {{ episode.title }}
+                <img src="{{ episode.thumbnailImage.url }}" (click)="showSomething()">
+                <span *ngIf="show">
+                    {{ episode.title }}
+                </span>
             </li>
         </ul>
     </ng-template>
@@ -25,6 +27,7 @@ export class EpisodeListComponent {
 
     data:any;
     webtoonEpisodeList:any[];
+    show:boolean;
 
     constructor(private webtoonService:WebtoonService){}
 
@@ -36,7 +39,14 @@ export class EpisodeListComponent {
             });
     }
 
+    showSomething(){
+        this.show = !this.show;
+    }
+
     ngOnInit(){
+        this.show = true;
         this.getEpisodeList();
     }
 }
+
+

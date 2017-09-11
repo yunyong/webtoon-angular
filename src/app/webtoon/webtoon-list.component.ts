@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { WebtoonService } from '../webtoon/webtoon.service';;
+import { WebtoonService } from './webtoon.service';
 
 @Component({
     selector : 'webtoon-list',
