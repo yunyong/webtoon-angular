@@ -1,30 +1,24 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 
 @Component({
     selector : 'webtoon-component',
     template : `
         <ul class="list_tab list_type_tab">
             <li *ngFor="let sort of sortTab">
-                <a [routerLink]="['/webtoon']" [queryParams]="{
-                        day : day,
-                        sort : sort.type 
-                    }">
+                <a [routerLink]="['/webtoon']" fragment="day={{ day }}&sort={{ sort.type }}&page=1">
                         {{ sort.text }}
                 </a>
             </li>
         </ul>
-        <ul *ngIf="sort == 'update'" class="list_tab list_day_tab">
+        <ul *ngIf="opt.sort == 'update'" class="list_tab list_day_tab">
             <li *ngFor="let day of dayTab">
-                <a [routerLink]="['/webtoon']" [queryParams]="{
-                    day : day.day,
-                    sort : 'update'
-                }">
+                <a [routerLink]="['/webtoon']"  fragment="day={{ day.day }}&sort=update&page=1">
                     {{ day.text }}
                 </a>
             </li>
         </ul>
-        <webtoon-list [day]="day" [sort]="sort"></webtoon-list>
+        <webtoon-list [day]="opt.day" [sort]="opt.sort" [page]="opt.page"></webtoon-list>
     `,
     styles : [`
         .list_tab {overflow:hidden}
@@ -36,8 +30,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class WebtoonComponent{
-    sort:string;
-    day:string;
+    opt:any = {
+        sort : 'update',
+        day : 'mon',
+        page : 1
+    };
 
     dayTab = [{
             day : 'mon',
@@ -78,12 +75,21 @@ export class WebtoonComponent{
     ];
 
 
-    constructor(private route:ActivatedRoute){}
+    constructor(private route:ActivatedRoute, private router:Router){
+        router.events.subscribe(s => {
+            if(s instanceof NavigationEnd){
+                const tree = router.parseUrl(router.url);
+                if(tree.fragment){
+                    tree.fragment.split('&').forEach(hashObj => {
+                        let title = hashObj.split('=')[0];
+                        let val = hashObj.split('=')[1];
+                        this.opt[title] = val;
+                    })
+                }
+            }
+        });
+    }
 
     ngOnInit(){
-        this.route.queryParams.subscribe(params => {
-            this.day = params['day'] || 'mon';
-            this.sort = params['sort'] || 'update';
-        });
     }
 }

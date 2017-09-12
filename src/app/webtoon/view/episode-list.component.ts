@@ -1,15 +1,15 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import { WebtoonService } from '../webtoon.service';
 
 @Component({
     selector : 'episode-list',
     template : `
-     <div *ngIf="!data; else wrapInfo">Loading..</div>
+    <div *ngIf="!data; else wrapInfo" class="page_loading">Loading..</div>
     <ng-template #wrapInfo>
         <ul class="list_episode" *ngIf="webtoonEpisodeList">
             <li *ngFor="let episode of webtoonEpisodeList">
-                <img src="{{ episode.thumbnailImage.url }}" (click)="showSomething()">
-                <span *ngIf="show">
+                <img src="{{ episode.thumbnailImage.url }}">
+                <span>
                     {{ episode.title }}
                 </span>
             </li>
@@ -24,27 +24,23 @@ import { WebtoonService } from '../webtoon.service';
 
 export class EpisodeListComponent {
     @Input() nickname;
+    @Input() page;
 
     data:any;
-    webtoonEpisodeList:any[];
-    show:boolean;
+    webtoonEpisodeList:any[] = [];
 
     constructor(private webtoonService:WebtoonService){}
 
     getEpisodeList(){
-        this.webtoonService.getEpisodeList(this.nickname)
+        this.webtoonService.getEpisodeList(this.nickname, this.page)
             .subscribe(data => {
                 this.data = data;
-                this.webtoonEpisodeList = data.data.webtoonEpisodes;
+                this.webtoonEpisodeList = this.webtoonEpisodeList.concat(data.data.webtoonEpisodes);
             });
     }
 
-    showSomething(){
-        this.show = !this.show;
-    }
-
-    ngOnInit(){
-        this.show = true;
+    ngOnChanges(changes:SimpleChanges):void {
+        this.page = changes.page ? changes.page.currentValue : this.page;
         this.getEpisodeList();
     }
 }

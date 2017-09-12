@@ -17,15 +17,23 @@ export class WebtoonService {
     }
 
     getDayWebtoonList(opt:any):Observable<any> {
-        let url = `http://webtoon.daum.net//data/mobile/webtoon?week=${opt.day}&sort=${opt.sort}&page_size=20&page_no=${opt.page}&callback=JSONP_CALLBACK`;
+        var pageNo = opt.page;
+        var pageSize = 20;
+
+        if(opt.opt != 'add') {
+            pageNo = 1;
+            pageSize = opt.page * 20;
+        };
+
+        let url = `http://webtoon.daum.net//data/mobile/webtoon?week=${opt.day}&sort=${opt.sort}&page_size=${pageSize}&page_no=${pageNo}&callback=JSONP_CALLBACK`;
         return this.jsonp.get(url)
             .map(res => {
                 return res.json()
             });
     }
 
-    getEpisodeList(nickname:string):Observable<any> {
-        let url = `http://m.webtoon.daum.net/data/mobile/webtoon/list_episode_by_nickname?nickname=${nickname}&page_no=1&page_size=10&sort=desc&callback=JSONP_CALLBACK`;
+    getEpisodeList(nickname:string, page:number):Observable<any> {
+        let url = `http://m.webtoon.daum.net/data/mobile/webtoon/list_episode_by_nickname?nickname=${nickname}&page_no=${page}&page_size=10&sort=desc&callback=JSONP_CALLBACK`;
         return this.jsonp.get(url)
             .map(res => {
                 return res.json()

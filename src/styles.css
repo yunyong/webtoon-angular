@@ -31,3 +31,4 @@ address,caption,cite,code,dfn,em,var {font-style:normal;font-weight:normal}
 .hide {display:none}
 .tbl {border-collapse:collapse;border-spacing: 0}
 
+.page_loading {position:fixed;top:200px;left:50%;z-index:100;width:40px;height:40px;margin-left:-20px;background:url(http://i1.daumcdn.net/img-section/cartoon/webtoon2015/ico_loading.gif);text-indent:-9999px}
